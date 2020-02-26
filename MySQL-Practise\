@@ -1,0 +1,201 @@
+// MySQL Function
+
+	1. Create Function
+		DELIMITER ?
+		CREATE FUNCTION get_fname(emp_age int) RETURNS VARCHAR(80)
+		BEGIN
+		DECLARE de_name VARCHAR(80) DEFAULT"";
+		SELECT email INTO de_name FROM login WHERE age = emp_age;
+		RETURN de_name;
+		END ?
+
+	2. Drop Function
+		drop function function_name;
+
+// MySQL Stored Procedure
+	
+	1. Create Procedure
+		DELIMITER ;;
+		CREATE PROCEDURE get_userdata()
+		BEGIN
+		SELECT * FROM login;
+		END ;;	
+	2. Drop Procedure
+		drop procedure procedure_name;
+
+// MySQL - Trigger
+
+	1. After/Before insert Trigger
+		step 1. Create a table which have main data
+			Ex : create table class(id int(10) NOT NULL, name varchar(30));
+		step 2. Create another table which have to copy data after insert in first table
+			Ex : create table class2(c_id int(10) AUTO_INCREMENT PRIMARY KEY, id int(10) NOT NULL, action varchar(30));
+		step 3. Create trigger for copy data one table to another
+			Ex : create trigger student_insert AFTER INSERT ON class FOR EACH ROW INSERT INTO class2 				     values(null,new.id,"inserted",new.name);
+		step 4. insert data in first table
+			Ex : insert into class values(4,"Manish");
+
+		Result : Current data copied in second table.
+	
+	2. After/Before update Trigger
+		step 1. same as above step 1 and 2.
+		step 2. create trigger class_update AFTER UPDATE ON class FOR EACH ROW UPDATE class2 SET name
+			Ex : CREATE TRIGGER student_update AFTER UPDATE ON class FOR EACH ROW UPDATE class2 SET name=new.name where id=id;
+	3. After/Before delete Trigger
+		step 1. same as above step 1 and 2.
+		step 2. It points the trigger after/before delete query is executed
+			Ex : CREATE TRIGGER student_delete AFTER DELETE ON class FOR EACH ROW DELETE FROM class2 WHERE class.id = class2.id;
+	4. Drop Trigger
+		Ex : drop trigger trigger_name;
+	5. Show trigger
+		show create trigger trigger_name\G
+
+
+// DMEO
+	insert into products(ProductName,SupplierID,CategoryId,Unit,price) values("Rahul",1,1,"10 boxes",60);
+
+
+// Procedure
+DELIMITER //
+create procedure hiredforfellowship()
+BEGIN
+DECLARE idcan int(11);
+DECLARE firstname varchar(30);
+DECLARE lastnmae varchar(30);
+DECLARE emailid varchar(30);
+DECLARE hiredcity varchar(30);
+DECLARE	degreename varchar(20);
+DECLARE hireddate date;
+DECLARE mobilenum bigint(20);
+DECLARE permananentpincode bigint(20);
+DECLARE hiredlab varchar(30);
+DECLARE communicationremark varchar(20);
+DECLARE knowledgeremark varchar(20);
+DECLARE aggregatepercentage double(4,2);
+DECLARE creatorstamp timestamp;
+DECLARE creatoruser int(11);
+DECLARE IS_DONE INTEGER DEFAULT O;
+DECLARE c2 cursor FOR
+select * from HiredCandidate;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET IS_DONE = 1;
+OPEN c2;
+get_list : LOOP
+fetch c2 into idcan,firstname,lastnmae,emailid,hiredcity,degreename,hireddate,mobilenum,permananentpincode,hiredlab,communicationremark,
+knowledgeremark,aggregatepercentage,creatorstamp,creatoruser;
+IF IS_DONE =1 THEN
+LEAVE get_list;
+END IF;
+insert into FellowshipCandidate(id,first_name,last_name,email_id,hired_city,degree,hired_date,mobile_number,permanent_pincode,hired_lab,
+communication_remark,knowledge_remark,aggregate_remark,creator_stamp,creator_user) values(idcan,firstname,lastnmae,emailid,hiredcity,degreename,hireddate,mobilenum,permananentpincode,hiredlab,communicationremark,
+knowledgeremark,aggregatepercentage,creatorstamp,creatoruser);
+END LOOP get_list;
+
+CLOSE c2;
+END;
+//
+insert into HiredCandidate(first_name,last_name,email_id,hired_city,degree,hired_date,mobile_number,permanent_pincode,hired_lab,communication_remark,knowledge_remark,aggregate_percentage,creator_stamp,creator_user)
+values("Amresh","Kumar","amreshkr81257@gmail.com","Bangalore","BTech","2019-11-13",9818104950,854761,"Bangalore","Good","Good",75.32,now(),2);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE hired_to_fellowship()
+BEGIN
+DECLARE id int(11);
+DECLARE firstname varchar(20);
+DECLARE lastname varchar(20);
+DECLARE emailid varchar(60);
+DECLARE hiredcity varchar(20);
+DECLARE degree varchar(20);
+DECLARE hireddate DATE;
+DECLARE mobilenumber bigint(20);
+DECLARE permanentpincode bigint(20);
+DECLARE hiredlab varchar(20);
+DECLARE communicationremark varchar(20);
+DECLARE knowledgeremark varchar(20);
+DECLARE aggregatepercentage double(4,2);
+DECLARE creatorstamp timestamp;
+DECLARE creatoruser int(11);
+DECLARE IS_DONE INTEGER DEFAULT 0;
+DECLARE C1 CURSOR FOR 
+SELECT  * FROM HiredCandidate;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET IS_DONE = 1;
+OPEN C1;
+get_list : LOOP
+FETCH C1 INTO  id,firstname,lastname,emailid,hiredcity,degree,hireddate,mobilenumber,permanentpincode,hiredlab,communicationremark,knowledgeremark,aggregatepercentage,creatorstamp,creatoruser;
+IF IS_DONE = 1 THEN
+LEAVE get_list;
+END IF;
+INSERT INTO FellowshipCandidate
+(id,first_name,last_name,email_id,hired_city,degree,hired_date,mobile_number,permanent_pincode,hired_lab,communication_remark,knowledge_remark,aggregate_percentage,creator_stamp,creator_user ) values(id,firstname,lastname,emailid,hiredcity,degree,hireddate,mobilenumber,permanentpincode,hiredlab,communicationremark,knowledgeremark,aggregatepercentage,creatorstamp,creatoruser);
+END LOOP get_list;
+CLOSE C1;
+END //
+
+
+
+
+
+
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE hired_fellowship (IN candidate_id int(11))
+BEGIN
+DECLARE id int(11);
+DECLARE first_name varchar(20);
+DECLARE last_name varchar(20);
+DECLARE email_id varchar(60);
+DECLARE hired_city varchar(20);
+DECLARE degree varchar(20);
+DECLARE hired_date DATE;
+DECLARE mobile_number bigint(20);
+DECLARE permanent_pincode bigint(20);
+DECLARE hired_lab varchar(20);
+DECLARE communication_remark varchar(20);
+DECLARE knowledge_remark varchar(20);
+DECLARE aggregate_percentage double(4,2);
+DECLARE creator_stamp timestamp;
+DECLARE creator_user int(11);
+DECLARE IS_DONE INTEGER DEFAULT 0;
+DECLARE C1 CURSOR FOR 
+SELECT  * FROM HiredCandidate WHERE id=candidate_id;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET IS_DONE = 1;
+OPEN C1;
+get_list : LOOP
+FETCH C1 INTO  id,first_name,last_name,email_id,hired_city,degree,hired_date,mobile_number,permanent_pincode,hired_lab,communication_remark ,knowledge_remark,aggregate_percentage,creator_stamp,creator_user;
+IF IS_DONE = 1 THEN
+LEAVE get_list;
+END IF;
+INSERT INTO FellowshipCandidate
+(id,first_name,last_name,email_id,hired_city,degree,hired_date,mobile_number,permanent_pincode,hired_lab,communication_remark ,knowledge_remark,aggregate_percentage,creator_stamp,creator_user) values(id,first_name,last_name,email_id,hired_city,degree,hired_date,mobile_number,permanent_pincode,hired_lab,communication_remark ,knowledge_remark,aggregate_percentage,creator_stamp,creator_user);
+END LOOP get_list;
+CLOSE C1;
+END //
+
+
+
+
+
+
+
+
+
+
